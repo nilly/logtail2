@@ -1,0 +1,11 @@
+logtail2: 
+
+Print log file lines that has not been read since last run. This is another
+implementaion of the famous logtail file utility. This program is written in
+C (the original logtail is a Perl-script).
+
+If -c is used or logtail2 is invoked as logtail, then is enables logtail
+compatibility mode where is saves the offset file next to the logfile it
+tails.
+
+Anders Lövgren, 2008-01-28
