@@ -50,8 +50,6 @@ struct options
 	char *prog;            /* program name */
 	char *logfile;         /* logfile */
 	char *offset;          /* offset file */
-	long spos;             /* saved position */
-	long cpos;             /* current position */
 	int test;              /* enable dry-run */
 	int debug;             /* enable debug */
 	int compat;            /* enable logtail compatibility */

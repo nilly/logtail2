@@ -42,12 +42,14 @@
 /*
  * Read saved offset from path.
  */
-static void read_offset(const char *path, long *offset, struct options *opts)
+static void read_offset(const char *path, struct stat *offs, struct options *opts)
 {
-	struct stat st;
 	FILE *fs;
+
+	offs->st_ino  = 0;
+	offs->st_size = 0;
 	
-	if(stat(path, &st) < 0) {
+	if(stat(path, offs) < 0) {
 		if(errno == ENOENT) {
 			/*
 			 * OK for offset file to be missing.
@@ -67,8 +69,8 @@ static void read_offset(const char *path, long *offset, struct options *opts)
 		fclose(fs);
 		exit(FAILED_STAT_LOGFILE);
 	}
-	if(fscanf(fs, "%lu\n", offset) != 1) {
-		fprintf(stderr, "%s: failed read saved position from %s (%s)\n", 
+	if(fscanf(fs, "%lu\n%lu\n", &offs->st_ino, &offs->st_size) != 2) {
+		fprintf(stderr, "%s: failed read data from offset file %s (%s)\n", 
 			opts->prog, path, strerror(errno));
 		fclose(fs);
 		exit(FAILED_STAT_LOGFILE);
@@ -79,7 +81,7 @@ static void read_offset(const char *path, long *offset, struct options *opts)
 /*
  * Write current offset to path.
  */
-static void write_offset(const char *path, long offset, struct options *opts)
+static void write_offset(const char *path, struct stat *offs, struct options *opts)
 {
 	FILE *fs;
 	
@@ -89,7 +91,7 @@ static void write_offset(const char *path, long offset, struct options *opts)
 			opts->prog, path, strerror(errno));
 		exit(FAILED_WRITE_OFFSET);
 	}
-	fprintf(fs, "%lu\n", offset);
+	fprintf(fs, "%lu\n%lu\n", offs->st_ino, offs->st_size);
 	fclose(fs);
 }
 
@@ -100,26 +102,41 @@ static void write_offset(const char *path, long offset, struct options *opts)
 void read_logfile(struct options *opts)
 {
 	FILE *fs;
-	struct stat st;
+	struct stat slog, soff;
 	int c;
 	
-	read_offset(opts->offset, &opts->spos, opts);
-	if(opts->debug && opts->spos) {
-		printf("debug: read offset %lu\n", opts->spos);
+	read_offset(opts->offset, &soff, opts);
+	if(opts->debug && soff.st_size) {
+		printf("debug: read offset pos=%lu, inode=%d\n", soff.st_size, soff.st_ino);
 	}
 
-	if(stat(opts->logfile, &st) < 0) {
+	if(stat(opts->logfile, &slog) < 0) {
 		fprintf(stderr, "%s: failed stat logfile file %s (%s)\n", 
 			opts->prog, opts->logfile, strerror(errno));
 		exit(FAILED_STAT_LOGFILE);
 	}
 	
-	if(opts->spos > st.st_size) {
-		if(opts->debug) {
-			printf("debug: logfile has wrapped (spos %d bytes > size %d bytes)\n",
-			       opts->spos, st.st_size);
+	if(soff.st_ino == slog.st_ino) {
+		if(soff.st_size == slog.st_size) {
+			if(opts->debug) {
+				printf("debug: nothing has changed since last run (exiting)\n");
+			}
+			exit(EXIT_SUCCESS);
 		}
-		opts->spos = 0;     /* wrapped logfile */
+		if(soff.st_size > slog.st_size && opts->compat) {
+			fprintf(stderr, "%s: logfile %s is smaller than last time checked,\n", 
+				opts->prog, opts->logfile);
+			fprintf(stderr, "%s: this could indicate tampering.\n", 
+				opts->prog);
+		}
+	}
+	
+	if(soff.st_size > slog.st_size) {
+		if(opts->debug) {
+			printf("debug: logfile has wrapped (size: old=%d, new=%d (bytes))\n",
+			       soff.st_size, slog.st_size);
+		}
+		soff.st_size = 0;     /* wrapped logfile */
 	}
 	
 	fs = fopen(opts->logfile, "r");
@@ -128,33 +145,33 @@ void read_logfile(struct options *opts)
 			opts->prog, opts->logfile, strerror(errno));
 		exit(FAILED_READ_LOGFILE);
 	}
-	if(opts->spos) {
-		if(fseek(fs, opts->spos, SEEK_SET) < 0) {
+	if(soff.st_size) {
+		if(fseek(fs, soff.st_size, SEEK_SET) < 0) {
 			fprintf(stderr, "%s: failed seek last read position in log file (%s)\n",
 				opts->prog, strerror(errno));
 			fclose(fs);
 			exit(FAILED_READ_LOGFILE);
 		}
 		if(opts->debug) {
-			printf("debug: skipped %d bytes, current pos: %d\n", opts->spos, ftell(fs));
+			printf("debug: skipped %d bytes, current pos: %d\n", soff.st_size, ftell(fs));
 		}
 	}
 
 	while((c = getc(fs)) != EOF) {
 		putchar(c);
 	}	
-	opts->cpos = ftell(fs);
+	slog.st_size = ftell(fs);
 	fclose(fs);	
 
 	if(!opts->test) {
 		if(opts->debug) {
-			printf("debug: read %d bytes\n", opts->cpos - opts->spos);
+			printf("debug: read %d bytes\n", slog.st_size - soff.st_size);
 		}
-		if(opts->cpos > opts->spos) {
+		if(slog.st_size > soff.st_size) {
 			if(opts->debug) {
-				printf("debug: saving offset %d\n", opts->cpos);
+				printf("debug: saving offset %d\n", slog.st_size);
 			}
-			write_offset(opts->offset, opts->cpos, opts);
+			write_offset(opts->offset, &slog, opts);
 		}
 	}
 }
