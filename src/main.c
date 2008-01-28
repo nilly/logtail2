@@ -61,8 +61,6 @@ int main(int argc, char **argv)
 	memset(&opts, 0, sizeof(struct options));
 	opts.prog = basename(argv[0]);
 
-	fprintf(stderr, "%s\n", strerror(56));
-	
 #ifdef HAVE_ATEXIT
 	atexit(exit_handler);
 #endif
