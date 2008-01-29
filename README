@@ -1,11 +1,49 @@
-logtail2: 
+** GENERAL:
 
-Print log file lines that has not been read since last run. This is another
-implementaion of the famous logtail file utility. This program is written in
-C (the original logtail is a Perl-script).
+   Print log file lines that has not been read since last run. This is a
+   replacement for the logtail utility distributed in the logcheck package. 
+   This logtail is implemented in the C-language to be used on system 
+   where perl(1) for some reason is not wanted or can't be installed.
 
-If -c is used or logtail2 is invoked as logtail, then is enables logtail
-compatibility mode where is saves the offset file next to the logfile it
-tails.
+** INSTALLATION:
 
+   See INSTALL for a complete tutorial. The short answer:
+   
+     ./configure
+     make
+     make install
+
+** COMPATIBILITY:
+
+   Command line options:
+   ----------------------
+   The command line options includes the logtail compatible options as a
+   subset in addition. Fully compatible mode is providing by running
+   logtail2 with the '-c' option *or* invoking logtail2 as logtail (i.e.
+   thru a symbolic link or a shell wrapper).
+   
+   Exit codes:
+   ----------------------
+   The same exit codes as logtail are used. The following exit codes are
+   extensions:
+   
+     80 - failed allocate memory.
+     81 - program argument error.
+     82 - failed lookup user information.
+   
+** OFFSET FILES:
+
+   The format of the offset file are the same as that used by logtail.
+
+   Compatibility mode:
+   ----------------------   
+   When running in compatibility mode, the offset files gets saved as
+   logfile.offset unless the '-o' option is used.
+   
+   Native mode (logtail2):
+   ----------------------
+   The offset files are saved under /var/cache/logtail2 when runned by root
+   and under ~/.logtail2 when runned by an ordinary user. The default
+   location of the offset file can be overridden by using the '-o' option.
+   
 Anders Lövgren, 2008-01-28
