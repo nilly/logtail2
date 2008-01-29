@@ -1,0 +1,13 @@
+0.5.1 (2008-01-29):
+
+      * Modified format of offset file to be fully compatible with original
+        logtail.
+	
+      * Fast exit (with successful exit code) if inode and size of logfile 
+        has not changed since last run. Adding logtail compatible warning if
+	logfile tampering is detected (changed inode and size).
+      
+0.5.0 (2008-01-28):
+
+      * Initial version having logtail compatible program options and mode.
+      
