@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(logtail2, 0.5.0, anders.lovgren@bmc.uu.se)
-AM_INIT_AUTOMAKE(logtail2, 0.5.0)
+AC_INIT(logtail2, 0.5.1, anders.lovgren@bmc.uu.se)
+AM_INIT_AUTOMAKE(logtail2, 0.5.1)
 
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
