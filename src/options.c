@@ -37,7 +37,7 @@
 
 #include "logtail2.h"
 
-static void usage(const char *prog)
+static void usage(const char *prog, struct options *opts)
 {
 	printf("%s - Print log file lines that have not been read.\n", prog);
 	printf("Usage: %s [-t] -f logfile [-o offsetfile]\n", prog);
@@ -45,10 +45,12 @@ static void usage(const char *prog)
 	printf("  -f logfile:     logfile to read after offset.\n");
 	printf("  -o offsetfile:  offsetfile stores offset of previous run.\n");
 	printf("  -t:             test mode, do not change offset in offsetfile.\n");
-	printf("  -c, --compat:   enable logtail compatible mode.\n");
-	printf("  -d, --debug:    enable debug output.\n");
-	printf("  -h, --help:     show this help.\n");
-	printf("  -V, --version:  show version info.\n");
+	if(!opts->compat) {
+		printf("  -c, --compat:   enable logtail compatible mode.\n");
+		printf("  -d, --debug:    enable debug output.\n");
+		printf("  -h, --help:     show this help.\n");
+		printf("  -V, --version:  show version info.\n");
+	}
 	printf("Send bugs to %s\n", PACKAGE_BUGREPORT);
 }
 
@@ -73,12 +75,12 @@ void parse_options(int argc, char **argv, struct options *opts)
 	};			
 	int c, index;
 	
-	if(argc < 2) {
-		usage(opts->prog);
-		exit(PROG_ARGUMENT_ERROR);
-	}
 	if(strcmp(opts->prog, "logtail") == 0) {
 		opts->compat = 1;
+	}
+	if(argc < 2) {
+		usage(opts->prog, opts);
+		exit(PROG_ARGUMENT_ERROR);
 	}
 	
 	while((c = getopt_long(argc, argv, "cdf:ho:tV", lopts, &index)) != -1) {
@@ -101,7 +103,7 @@ void parse_options(int argc, char **argv, struct options *opts)
 			strcpy(opts->logfile, optarg);
 			break;
 		case 'h':
-			usage(opts->prog);
+			usage(opts->prog, opts);
 			exit(0);
 			break;
 		case 'o':
