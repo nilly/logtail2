@@ -126,7 +126,7 @@ void read_logfile(struct options *opts)
 			}
 			exit(EXIT_SUCCESS);
 		}
-		if(soff.st_size > slog.st_size && opts->compat) {
+		if(soff.st_size > slog.st_size) {
 			fprintf(stderr, "%s: logfile %s is smaller than last time checked,\n", 
 				opts->prog, opts->logfile);
 			fprintf(stderr, "%s: this could indicate tampering.\n", 
