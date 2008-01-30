@@ -59,4 +59,13 @@ void parse_options(int argc, char **argv, struct options *opts);
 void read_logfile(struct options *opts);
 void set_offset_path(struct options *opts);
 
+#ifndef HAVE_STRSTR
+static __inline__ char * rpl_strstr(const char *h, const char *n)
+{
+	while(*h && strncmp(h, n, strlen(n) != 0)) ++h;
+	return *h ? (char *)h : NULL;
+}
+#define strstr(h, n) rpl_strstr(h, n)
+#endif /* !HAVE_STRSTR */
+
 #endif /* #define __LOGTAIL2_H__ */

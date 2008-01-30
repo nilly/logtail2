@@ -4659,7 +4659,8 @@ fi
 
 
 
-for ac_func in atexit memset mkdir realpath strerror
+
+for ac_func in atexit memset mkdir realpath strerror strstr
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 { echo "$as_me:$LINENO: checking for $ac_func" >&5

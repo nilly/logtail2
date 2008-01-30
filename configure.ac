@@ -15,7 +15,7 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 AC_FUNC_MALLOC
 AC_FUNC_STAT
-AC_CHECK_FUNCS([atexit memset mkdir realpath strerror])
+AC_CHECK_FUNCS([atexit memset mkdir realpath strerror strstr])
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile])
