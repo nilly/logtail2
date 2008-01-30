@@ -1,0 +1,95 @@
+.\ -*- sh -*-
+.TH LOGTAIL2 8 "Tue, 29 Jan 2008" "QNET" "logtail2 manual"
+.SH NAME
+logtail2 \- print log file lines that have not been read
+
+.SH SYNOPSIS
+.B logtail2 -f logfile [options...]
+
+.SH DESCRIPTION
+.B logtail2
+prints to standard output the content from logfile that has been added since 
+last run. The logfile argument is intended to be a regular, plain text logfile. 
+It has two modes of operations: either \fBnative\fR or \fBcompatible\fR mode.
+.P
+It uses offset files for storing data for next run. Use the \-o option to 
+explicit set the location of the offset file. The default location of the 
+offset file depends on the mode of operation.
+.P
+If the inode has not changed but \fIlogfile\fR is shorter than it was at the 
+last run, then a warning message is written to standard output.
+
+.SS Native mode
+The offset file cache is used for storing data for next run when \fBlogtail2\fR
+runs in native mode. Its location depends on whether logtail2 is invoked by root 
+or an ordinary user.
+
+.SS Compatible mode
+This mode makes \fBlogtail2\fR compatible with the Perl implementation of logtail. 
+The offset file is stored as \fBlogfile.offset\fR unless the \-o option is used. 
+Compatible mode is selected by invoking \fBlogtail2\fR as \fBlogtail\fR or using 
+the \-c option.
+
+.SH OPTIONS
+.TP
+.B \-f logfile
+The
+.I logfile 
+to be read after offset.
+.TP
+.B \-o offsetfile
+The
+.I offsetfile 
+stores the offset data for next run.
+.TP
+.B \-t
+Run in test mode where no offset data is saved to the
+.I offsetfile
+.TP
+.B \-c
+Enable logtail compatible mode. This has the same effect as invoking
+logtail2 as logtail.
+.TP
+.B \-d
+Enable debug printouts.
+
+.SH EXIT VALUES
+.IP 0
+Successful.
+.IP 65
+Cannot get the size of
+.IR logfile
+.IP 66
+The 
+.I logfile 
+does not exist, is not a plain file, or is not readable.
+.IP 73
+Cannot write to the offset file.
+.IP 80
+Failed allocate memory.
+.IP 81
+Program argument error.
+.IP 82
+Failed lookup user account.
+
+.SH AUTHOR
+The original \fBlogtail\fR was written in C by Craig H. Rowland <crowland@psionic.com>. 
+A Perl reimplementation of logtail was written by Paul Slootman <paul@debian.org> 
+and enhanced by the Debian Logcheck Team <logcheck-devel@lists.alioth.debian.org>.
+.P
+The \fBlogtail2\fR program is written in C by Anders Lövgren <lespaul@algonet.se> 
+and aims to be compatible with the Perl reimplementation of the original \fBlogtail\fR.
+.P
+This manual was written by Anders Lövgren <lespaul@algonet.se>
+
+.SH FILES
+Offset files locations when running in native mode:
+.TP
+.B /var/cache/logtail2
+The system wide offset file cache used when running by root.
+.TP
+.B ~/.logtail2
+The per user offset file cache used when runned by ordinary users.
+
+.SH SEE ALSO
+.BR logtail (8)
