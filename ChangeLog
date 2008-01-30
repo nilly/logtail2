@@ -2,7 +2,12 @@
 
       * Adding manual page documenting logtail2 and differences aginst the 
         Perl implementation of logtail written by Debians Logcheck team.
-	
+
+      * Making logtail2 more compatible with logtail.
+      
+      * Fixing compiler warnings and adding fixes for missing library 
+        functions (i.e. strstr()).
+      
 0.5.1 (2008-01-29):
 
       * Modified format of offset file to be fully compatible with original
