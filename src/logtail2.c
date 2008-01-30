@@ -35,6 +35,9 @@
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
+#ifdef HAVE_STRING_H
+# include <string.h>
+#endif
 #include <errno.h>
 
 #include "logtail2.h"
@@ -107,7 +110,7 @@ void read_logfile(struct options *opts)
 	
 	read_offset(opts->offset, &soff, opts);
 	if(opts->debug && soff.st_size) {
-		printf("debug: read offset pos=%lu, inode=%d\n", soff.st_size, soff.st_ino);
+		printf("debug: read offset pos=%lu, inode=%lu\n", soff.st_size, soff.st_ino);
 	}
 
 	if(stat(opts->logfile, &slog) < 0) {
@@ -133,7 +136,7 @@ void read_logfile(struct options *opts)
 	
 	if(soff.st_size > slog.st_size) {
 		if(opts->debug) {
-			printf("debug: logfile has wrapped (size: old=%d, new=%d (bytes))\n",
+			printf("debug: logfile has wrapped (size: old=%lu, new=%lu (bytes))\n",
 			       soff.st_size, slog.st_size);
 		}
 		soff.st_size = 0;     /* wrapped logfile */
@@ -153,7 +156,7 @@ void read_logfile(struct options *opts)
 			exit(FAILED_READ_LOGFILE);
 		}
 		if(opts->debug) {
-			printf("debug: skipped %d bytes, current pos: %d\n", soff.st_size, ftell(fs));
+			printf("debug: skipped %lu bytes, current pos: %lu\n", soff.st_size, ftell(fs));
 		}
 	}
 
@@ -165,11 +168,11 @@ void read_logfile(struct options *opts)
 
 	if(!opts->test) {
 		if(opts->debug) {
-			printf("debug: read %d bytes\n", slog.st_size - soff.st_size);
+			printf("debug: read %lu bytes\n", slog.st_size - soff.st_size);
 		}
 		if(slog.st_size > soff.st_size) {
 			if(opts->debug) {
-				printf("debug: saving offset %d\n", slog.st_size);
+				printf("debug: saving offset %lu\n", slog.st_size);
 			}
 			write_offset(opts->offset, &slog, opts);
 		}
