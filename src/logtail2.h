@@ -66,6 +66,6 @@ static __inline__ char * rpl_strstr(const char *h, const char *n)
 	return *h ? (char *)h : NULL;
 }
 #define strstr(h, n) rpl_strstr(h, n)
-#endif /* !HAVE_STRSTR */
+#endif /* ! HAVE_STRSTR */
 
 #endif /* #define __LOGTAIL2_H__ */

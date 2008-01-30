@@ -176,7 +176,7 @@ static void set_user_offset_path(struct options *opts)
 			opts->prog);
 		exit(PROG_ARGUMENT_ERROR);
 	}
-#endif  /* !HAVE_REALPATH */
+#endif  /* ! HAVE_REALPATH */
 	
 	bytes = snprintf(ps, size, "%s.offset", pr);
 	if(bytes < 0) {
