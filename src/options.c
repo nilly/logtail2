@@ -41,6 +41,7 @@
 static void usage(const char *prog, struct options *opts)
 {
 	printf("%s - Print log file lines that have not been read.\n", prog);
+	printf("\n");
 	printf("Usage: %s [-t] -f logfile [-o offsetfile]\n", prog);
 	printf("Options:\n");
 	printf("  -f logfile:     logfile to read after offset.\n");
@@ -52,6 +53,7 @@ static void usage(const char *prog, struct options *opts)
 		printf("  -h, --help:     show this help.\n");
 		printf("  -V, --version:  show version info.\n");
 	}
+	printf("\n");
 	printf("Send bugs to %s\n", PACKAGE_BUGREPORT);
 }
 
