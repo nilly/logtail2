@@ -1,4 +1,2 @@
 * linguist-vendored
-Makefile* linguist-vendored
-src/Makefile* linguist-vendored
-src/* linguist-vendored=false
+src/*.c linguist-vendored=false
