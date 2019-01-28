@@ -46,4 +46,4 @@
    and under ~/.logtail2 when runned by an ordinary user. The default
    location of the offset file can be overridden by using the '-o' option.
    
-Anders Lövgren, 2008-01-28
+Anders LÃ¶vgren, 2008-01-28

@@ -1,5 +1,6 @@
 /* Print log file lines that have not been read.
- * Copyright (C) 2008  Anders Lövgren
+ * 
+ * Copyright (C) 2008-2019 Anders LÃ¶vgren, BMC-IT and Nowise Systems
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * ---
- * Send questions to: Anders Lövgren <anders.lovgren@bmc.uu.se>
+ * Send questions to: Anders LÃ¶vgren <andlov@nowise.se>
  */
 
 #ifndef __LOGTAIL2_H__
